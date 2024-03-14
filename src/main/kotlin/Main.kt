@@ -1,6 +1,7 @@
 package org.pebiblioteca
 
 import java.security.KeyStore.TrustedCertificateEntry
+import java.time.LocalDateTime
 
 open class Libro(
     var id: String,
@@ -25,6 +26,7 @@ open class Libro(
 open class GestorBiblioteca(var catalogoLibros: MutableList<Libro>) {
 
     fun agregarLibro(libro: Libro) {
+        UtilidadesBiblioteca.generarIdentificadorUnico(libro)
         catalogoLibros.add(libro)
     }
 
@@ -33,42 +35,55 @@ open class GestorBiblioteca(var catalogoLibros: MutableList<Libro>) {
     }
 
     fun registrarPrestamo(libro: Libro) {
-        if(libro.estado=="disponible"){
-            libro.estado="prestado"
-        }else{
+        if (libro.estado == "disponible") {
+            libro.estado = "prestado"
+        } else {
             println("Error")
         }
     }
 
     fun devolverLibro(libro: Libro) {
-        if(libro.estado=="prestado"){
-            libro.estado="disponible"
-        }else{
+        if (libro.estado == "prestado") {
+            libro.estado = "disponible"
+        } else {
             println("Error")
         }
     }
 
-    fun consultarDisponibilidad(tituloLibro: String){
-        val libro=catalogoLibros.find { it.titulo==tituloLibro }
+    fun consultarDisponibilidad(tituloLibro: String) {
+        val libro = catalogoLibros.find { it.titulo == tituloLibro }
         if (libro != null) {
             println(libro.estado)
         }
     }
 
-    fun mostrarLibrosCriterio(){
+    fun mostrarLibrosCriterio() {
 
     }
 
 }
 
-fun main() {
-    var libro1=Libro("001","El Señor de los Anillos","JRR Tolkien", 1954, "Fantasía", "disponible")
-    var libro2=Libro("002", "El Resplandor", "Stephen King", 1977, "Terror", "disponible")
-    var libro3=Libro("003", "Cosmos", "Carl Sagan", 1980, "Ciencia", "Disponible")
-    var libro4=Libro("004", "Lengua Castellana y Literatura", "Natalia Bernabeu", 1994, "Educación", "Disponible")
+open class UtilidadesBiblioteca() {
+    companion object {
+        open fun generarIdentificadorUnico(libro: Libro) {
+            val fecha=LocalDateTime.now()
+            val substring1=fecha.toString().substring(0,3)
+            val subString2=fecha.toString().substring(14,18)
+            val codigo=substring1+subString2
 
-    var listaLibros= mutableListOf(libro1)
-    var gestion=GestorBiblioteca(listaLibros)
+            libro.id=codigo
+        }
+    }
+}
+
+fun main() {
+    var libro1 = Libro("001", "El Señor de los Anillos", "JRR Tolkien", 1954, "Fantasía", "disponible")
+    var libro2 = Libro("002", "El Resplandor", "Stephen King", 1977, "Terror", "disponible")
+    var libro3 = Libro("003", "Cosmos", "Carl Sagan", 1980, "Ciencia", "Disponible")
+    var libro4 = Libro("004", "Lengua Castellana y Literatura", "Natalia Bernabeu", 1994, "Educación", "Disponible")
+
+    var listaLibros = mutableListOf(libro1)
+    var gestion = GestorBiblioteca(listaLibros)
 
     gestion.agregarLibro(libro2)
     gestion.agregarLibro(libro3)
@@ -78,7 +93,6 @@ fun main() {
     gestion.registrarPrestamo(libro3)
     gestion.devolverLibro(libro1)
     gestion.devolverLibro(libro3)
-
 
 
 }
