@@ -1,5 +1,6 @@
 package org.pebiblioteca
 
+import sun.util.locale.LocaleUtils.isEmpty
 import java.security.KeyStore.TrustedCertificateEntry
 import java.time.LocalDateTime
 
@@ -17,6 +18,29 @@ interface IGestorPrestamos{
 
 
 }
+
+class GestorElementos<T>{
+    var elementos: MutableList<T> = mutableListOf()
+
+    fun agregarElemento(elemento: T){
+        elementos.add(elemento)
+    }
+
+    fun eliminarElemento(): T? {
+        if (elementos.isNotEmpty()) {
+            return elementos.removeAt(elementos.size - 1)
+        } else {
+            return null
+        }
+    }
+
+
+}
+
+open class Catalogo(id: String, titulo: String, estado: String = "disponible"){
+
+}
+
 abstract class ElementoBiblioteca(id: String, titulo: String, estado: String = "disponible")
 
 open class Libro(
