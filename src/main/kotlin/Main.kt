@@ -6,9 +6,9 @@ import java.time.LocalDateTime
 open class Libro(
     var id: String,
     val titulo: String,
-    val autor: String,
+    private val autor: String,
     val año: Int,
-    val tematica: String,
+    private val tematica: String,
     var estado: String = "disponible"
 ) {
 
@@ -25,12 +25,12 @@ open class Libro(
 
 open class GestorBiblioteca(var catalogoLibros: MutableList<Libro>) {
 
-    fun agregarLibro(libro: Libro) {
+    open fun agregarLibro(libro: Libro) {
         UtilidadesBiblioteca.generarIdentificadorUnico(libro)
         catalogoLibros.add(libro)
     }
 
-    fun eliminarLibro(tituloLibro: String) {
+    open fun eliminarLibro(tituloLibro: String) {
         catalogoLibros.removeAll { it.titulo == tituloLibro }
     }
 
@@ -75,6 +75,47 @@ open class UtilidadesBiblioteca() {
         }
     }
 }
+
+open class Usuario(val id: String, val nombre: String, var listaPrestados: MutableList<Libro>){
+
+    fun agregarLibro(libro: Libro) {
+        listaPrestados.add(libro)
+    }
+
+    fun eliminarLibro(tituloLibro: String) {
+        listaPrestados.removeAll { it.titulo == tituloLibro }
+    }
+
+    fun consultarLibros(){
+        for (i in listaPrestados){
+            println(i)
+        }
+    }
+
+}
+
+open class RegistroPrestamos(val registro: MutableList<Libro>, var historial: MutableList<Libro>){
+
+    fun registrarPrestamo(nombre: Usuario, libro: Libro){
+        if(libro.estado=="disponible"){
+            nombre.listaPrestados.add(libro)
+        }else{
+            println("Libro no disponible")
+        }
+
+    }
+
+    fun devolverLibro(nombre: Usuario, libro: Libro){
+        if(libro.estado=="prestado"){
+            nombre.listaPrestados.removeAll { it.titulo==libro.toString() }
+        }else{
+            println("Libro no disponible")
+        }
+}
+
+
+}
+
 
 fun main() {
     var libro1 = Libro("001", "El Señor de los Anillos", "JRR Tolkien", 1954, "Fantasía", "disponible")
